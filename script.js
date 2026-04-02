@@ -59,93 +59,16 @@ const projects = [
         img: "res/images/projects/project1/e.png",
         title: "Emino Mod (SurvivalCraft 2.1)",
         tags: "survivalcraftt"
-    },
-    {
-        link: "projects/project12.html",
-        img: "res/images/projects/project1/e.png",
-        title: "Test Project",
-        tags: "survivalcraftt"
-    },
-    {
-        link: "projects/project13.html",
-        img: "res/images/projects/project1/e.png",
-        title: "Test Project",
-        tags: "mod"
-    },
-     {
-        link: "projects/project13.html",
-        img: "res/images/projects/project1/e.png",
-        title: "MODS 1",
-        tags: "mod"
-    },
-     {
-        link: "projects/project13.html",
-        img: "res/images/projects/project1/e.png",
-        title: "MCPE",
-        tags: "MCPE, mod"
-    },
-
-    {
-        link: "projects/project13.html",
-        img: "res/images/projects/project1/e.png",
-        title: "survivalcraft",
-        tags: "survivalcraftt,mod"
-    },
-    {
-        link: "projects/project13.html",
-        img: "res/images/projects/project1/e.png",
-        title: "MODS 2",
-        tags: "mod"
-    },
-    {
-        link: "projects/project13.html",
-        img: "res/images/projects/project1/e.png",
-        title: "MODS 3",
-        tags: "mod"
-    },
-    {
-        link: "projects/project13.html",
-        img: "res/images/projects/project1/e.png",
-        title: "MODS 4",
-        tags: "mod"
-    },
-    {
-        link: "projects/project13.html",
-        img: "res/images/projects/project1/e.png",
-        title: "MODS 5",
-        tags: "mod"
-    },
-    {
-        link: "projects/project13.html",
-        img: "res/images/projects/project1/e.png",
-        title: "MODS 6",
-        tags: "mod"
-    },
-    {
-        link: "projects/project13.html",
-        img: "res/images/projects/project1/e.png",
-        title: "MODS 7",
-        tags: "mod"
-    },
-     {
-        link: "projects/project13.html",
-        img: "res/images/projects/project1/e.png",
-        title: "MODS 8",
-        tags: "mod"
-    },
-     {
-        link: "projects/project13.html",
-        img: "res/images/projects/project1/e.png",
-        title: "MODS 9",
-        tags: "mod"
-    },
-     {
-        link: "projects/project13.html",
-        img: "res/images/projects/project1/e.png",
-        title: "MODS 10",
-        tags: "mod"
     }
 ];
+
+
+window.addEventListener("load", () => {
+    const select = document.querySelector("select");
+    if (!select) return;
+
+    select.value = getTag();
+});
 
 
 function getPage() {
@@ -153,7 +76,7 @@ function getPage() {
     return parseInt(params.get("page")) || 1;
 }
 
-const pageSize = 6;
+const pageSize = 9;
 
 function renderProjects() {
     const grid = document.querySelector(".projects-grid");

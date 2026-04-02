@@ -40,7 +40,11 @@ body::after {
     filter: blur(5px) brightness(50%);
     z-index: -1;
 }
-
+.sticky{
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
 header {
     background: #222222;
     padding: 20px;
@@ -48,6 +52,7 @@ header {
     align-items: center;
     gap: 20px;
     color: white;
+    
 }
 
 header img {
@@ -63,6 +68,7 @@ nav {
     background: rgb(73, 73, 73);
     text-align: center;
     padding: 12px;
+    
 }
 
 nav a {
@@ -381,3 +387,79 @@ footer {
 
 
 
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    padding: 10px 38px 10px 14px;
+    font-size: 14px;
+    font-weight: 500;
+
+
+    background-color: #1e1e1e;
+    color: #ffffff;
+
+    cursor: pointer;
+
+    outline: none;
+
+    transition: 0.2s;
+}
+
+
+select:hover {
+    background-color: #555;
+}
+
+select:focus {
+    box-shadow: 0 0 0 3px rgba(120, 120, 120, 0.2);
+}
+
+
+
+
+.select-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+
+.select-wrapper::after {
+    content: "▾";
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-size: 12px;
+}
+
+.page-button{
+
+    padding: 10px 14px;
+    margin: 0 4px;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    border: 1px solid #2a2a2a;
+    border-radius: 10px;
+
+    background-color: #1e1e1e;
+    color: #ffffff;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+.page-button:hover{
+    background-color: #555;
+}
+
+.page-button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+}
