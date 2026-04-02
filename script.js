@@ -58,7 +58,7 @@ const projects = [
         link: "projects/project1.html",
         img: "res/images/projects/project1/e.png",
         title: "Emino Mod (SurvivalCraft 2.1)",
-        tags: "survivalcraftt"
+        tags: "survivalcraftt,mod"
     }
 ];
 

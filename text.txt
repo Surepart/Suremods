@@ -4,3 +4,42 @@
                     <p>Emino Mod (SurvivalCraft 2.1)</p>
                 </div>
             </a>
+a = klm
+b = h21
+c = 551
+d = LLK
+e = JJ5
+f = H65
+g = C10
+h = E50
+i = ah
+j = 00100101
+k = 01
+l = 69
+M = 67
+n = 45
+o = 3
+p = 6
+q = 9
+r = girls
+s = wanna 
+t = drink
+u = wine
+v = keca
+w = kiss
+x = E8
+y = four
+z = one
+
+1 = a0
+2 = a1
+3 = a2
+4 = a3
+5 = a5
+6 = a6
+7 = a7
+8 = a8
+9 = a9
+0 = a10
+
+A = sir get down B = lowpoly  C = MCPE D = yakult  E = harder to guess F = playtime G = im heavy weapons guy H = gustavo I = lep J = my friend K = ays L = hayase yuuka M = ba N = java O = OPM P = pemuda pancasila Q = qir R = headset S = sutomo T = friend chicken U = uuid V = cyberbug 2077 W = explode X = MY PC Y = hell nah Z = bruh

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>text Chipher</title>
+</head>
+<body>
+    <h3>RANDOM CHIPHER TOOL!</h3>
+
+    <textarea id="input" placeholder="Enter text..."></textarea>
+    <br><br>
+
+    <button onclick="encrypt()">Encrypt</button>
+    <button onclick="decrypt()">Decrypt</button>
+
+    <p id="output"></p>
+
+    <br>
+    <br>
+    <div style="font-family: monospace; line-height: 1.6;">
+        <p> chipher list: <br>
+            a = klm<br>
+            b = h21<br>
+            c = 551<br>
+            d = LLK<br>
+            e = JJ5<br>
+            f = H65<br>
+            g = C10<br>
+            h = E50<br>
+            i = ah<br>
+            j = 00100101<br>
+            k = 01<br>
+            l = 69<br>
+            m = 67<br>
+            n = 45<br>
+            o = 3<br>
+            p = 6<br>
+            q = 9<br>
+            r = girls<br>
+            s = wanna<br>
+            t = drink<br>
+            u = wine<br>
+            v = keca<br>
+            w = kiss<br>
+            x = E8<br>
+            y = four<br>
+            z = one<br><br>
+
+            0 = a10<br>
+            1 = a0<br>
+            2 = a1<br>
+            3 = a2<br>
+            4 = a3<br>
+            5 = a5<br>
+            6 = a6<br>
+            7 = a7<br>
+            8 = a8<br>
+            9 = a9<br><br>
+
+            A = sir get down<br>
+            B = lowpoly<br>
+            C = MCPE<br>
+            D = yakult<br>
+            E = harder to guess<br>
+            F = playtime<br>
+            G = im heavy weapons guy<br>
+            H = gustavo<br>
+            I = lep<br>
+            J = my friend<br>
+            K = ays<br>
+            L = hayase yuuka<br>
+            M = ba<br>
+            N = java<br>
+            O = OPM<br>
+            P = pemuda pancasila<br>
+            Q = qir<br>
+            R = headset<br>
+            S = sutomo<br>
+            T = friend chicken<br>
+            U = uuid<br>
+            V = cyberbug 2077<br>
+            W = explode<br>
+            X = MY PC<br>
+            Y = hell nah<br>
+            Z = bruh<br>
+        </p>
+    </div>
+    <script>
+        const map = {
+
+        a:"klm", b:"h21", c:"551", d:"LLK", e:"JJ5", f:"H65",
+        g:"C10", h:"E50", i:"ah", j:"00100101", k:"01", l:"69",
+        m:"67", n:"45", o:"3", p:"6", q:"9", r:"girls",
+        s:"wanna", t:"drink", u:"wine", v:"keca", w:"kiss",
+        x:"E8", y:"four", z:"one",
+
+        
+        "1":"a0","2":"a1","3":"a2","4":"a3","5":"a5",
+        "6":"a6","7":"a7","8":"a8","9":"a9","0":"a10",
+
+     
+        A:"sir get down", B:"lowpoly", C:"MCPE", D:"yakult",
+        E:"harder to guess", F:"playtime", G:"im heavy weapons guy",
+        H:"gustavo", I:"lep", J:"my friend", K:"ays",
+        L:"hayase yuuka", M:"ba", N:"java", O:"OPM",
+        P:"pemuda pancasila", Q:"qir", R:"headset",
+        S:"sutomo", T:"friend chicken", U:"uuid",
+        V:"cyberbug 2077", W:"explode", X:"MY PC",
+        Y:"hell nah", Z:"bruh"
+        };
+
+       
+        const reverseMap = {};
+        for (let key in map) {
+            reverseMap[map[key]] = key;
+        }
+
+       
+        function encrypt() {
+            const input = document.getElementById("input").value;
+            let result = [];
+
+            for (let char of input) {
+                if (char === " ") {
+                    result.push("-");
+                } else if (map[char]) {
+                    result.push(map[char]);
+                } else {
+                    result.push(char);
+                }
+            }
+
+            document.getElementById("output").textContent = result.join(" | ");
+        }
+
+        
+        function decrypt() {
+            const input = document.getElementById("input").value;
+            let parts = input.split(" | ");
+            let result = "";
+
+            for (let part of parts) {
+                if (part === "-") {
+                    result += " ";
+                } else if (reverseMap[part]) {
+                    result += reverseMap[part];
+                } else {
+                    result += "uhh.. what??";
+                }
+            }
+
+            document.getElementById("output").textContent = result;
+        }
+    </script>
+    <style>
+        textarea {
+            width: 500px;
+            height: 200px;
+            font-size: 16px;
+            padding: 10px;
+        }
+    </style>
+</body>
+</html>
