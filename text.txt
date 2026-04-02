@@ -1,0 +1,6 @@
+ <a href="projects/project1.html" class="projects-link" data-tags="survivalcraftt">
+                <div class="projects-item">
+                    <img src="res/images/projects/project1/e.png" alt="preview">
+                    <p>Emino Mod (SurvivalCraft 2.1)</p>
+                </div>
+            </a>
