@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON CREATOR ULTIMATE!</title>
+</head>
+<body>
+    <h3>JSON Creator</h3>
+
+    <input id="key" placeholder="Key">
+    <input id="value" placeholder="Value">
+    <button onclick="addPair()">Add</button>
+
+    <br><br>
+
+    <button onclick="generateJSON()">Generate JSON</button>
+    <br>
+    <h4>Current Data</h4>
+    <ul id="history"></ul>
+    <br>
+    <h4>Generated Json:</h1>
+    <pre id="output"></pre>
+
+
+    <input id="filename" placeholder="File name (default: data)">
+    <br><br>
+    <button onclick="downloadJSON()">Download JSON</button>
+</body>
+<script>
+    let obj = {};
+
+    function renderHistory() {
+    const list = document.getElementById("history");
+    list.innerHTML = "";
+
+    for (let key in obj) {
+        const li = document.createElement("li");
+
+        li.textContent = `${key}: ${JSON.stringify(obj[key])}`;
+
+
+        const btn = document.createElement("button");
+        btn.textContent = "Remove";
+        btn.onclick = () => {
+            delete obj[key];
+            renderHistory();
+        };
+
+        li.appendChild(btn);
+        list.appendChild(li);
+    }
+    }
+    function addPair() {
+    const key = document.getElementById("key").value;
+    let value = document.getElementById("value").value;
+
+    if (!key) return;
+
+
+    if (value.includes(",")) {
+        value = value.split(",").map(v => {
+            v = v.trim();
+
+
+            if (!isNaN(v) && v !== "") return Number(v);
+
+
+            if (v === "true") return true;
+            if (v === "false") return false;
+
+            return v;
+        });
+    } else {
+
+        if (!isNaN(value) && value !== "") value = Number(value);
+        else if (value === "true") value = true;
+        else if (value === "false") value = false;
+    }
+
+    obj[key] = value;
+
+    document.getElementById("key").value = "";
+    document.getElementById("value").value = "";
+    renderHistory();
+    }
+
+
+    function generateJSON() {
+        document.getElementById("output").textContent =
+            JSON.stringify(obj, null, 2);
+    }
+
+    function downloadJSON() {
+    if (Object.keys(obj).length === 0) {
+        alert("Alright. what you gonna do with that empty file bruh?");
+        return;
+    }
+
+
+    let filename = document.getElementById("filename").value.trim();
+
+    if (!filename) {
+        filename = "data";
+    }
+
+    const data = JSON.stringify(obj, null, 2);
+
+    const blob = new Blob([data], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename + ".json";
+    a.click();
+
+    URL.revokeObjectURL(url);
+    }
+</script>
+<style>
+    #history button {
+    margin-left: 10px;
+}
+</style>
+</html>
