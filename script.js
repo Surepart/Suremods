@@ -59,6 +59,30 @@ const projects = [
         img: "res/images/projects/project1/e.png",
         title: "Emino Mod (SurvivalCraft 2.1)",
         tags: "survivalcraftt,mod"
+    },
+    {
+        link: "projects/survivalcrafttwopointone.html",
+        img: "res/images/projects/survivalcrafttwopointone/games.png",
+        title: "SurvivalCraft 2.1 Api by Gscience Studio & Lixue_Jin (moddable)",
+        tags: "survivalcraftt,app"
+    },
+    {
+        link: "projects/scpaker.html",
+        img: "res/images/what.webp",
+        title: "SCPacker",
+        tags: "survivalcraftt,app,tool"
+    },
+    {
+        link: "projects/rooftop.html",
+        img: "res/images/projects/rooftop/game.png",
+        title: "RoofTop Mod",
+        tags: "fnf,mod"
+    }, 
+    {   
+        link: "projects/kaimayentity.html",
+        img: "res/images/what.webp",
+        title: "KAIMyEntity Mod",
+        tags: "mcjv,mod,tutorial"
     }
 ];
 
@@ -144,3 +168,12 @@ function setTag(tag) {
     params.set("page", 1); // reset page when filtering
     window.location.search = params.toString();
 }
+
+
+const images = document.querySelectorAll('.slide-track img');
+
+images.forEach(img => {
+    img.addEventListener('click', () => {
+        img.classList.toggle('enlarged'); // enlarge in place
+    });
+});
