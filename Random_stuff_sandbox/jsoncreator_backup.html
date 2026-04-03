@@ -46,39 +46,12 @@
     let current = root;
     let stack = [];
 
-    function importJSON() {
-        const file = document.getElementById("fileInput").files[0];
-        if (!file) {
-            alert("pick any json first bruh..");
-            return;
-        }
-
-        const reader = new FileReader();
-
-        reader.onload = function (e) {
-            try {
-                const data = JSON.parse(e.target.result);
-
-                root = data;
-                current = root;
-                stack = [];
-
-                renderCurrent();
-                
-
-                alert("Imported");
-            } catch (err) {
-                alert("Invalid JSON file. your file is probably tweakin'");
-            }
-        };
-
-        reader.readAsText(file);
-    }
+    
     function renderCurrent() {
         const list = document.getElementById("currentList");
         list.innerHTML = "";
 
-
+        // 🟢 ARRAY MODE
         if (Array.isArray(current)) {
             current.forEach((item, index) => {
                 const li = document.createElement("li");
@@ -96,24 +69,8 @@
                 };
 
                 li.appendChild(removeBtn);
-                const editValueBtn = document.createElement("button");
-                editValueBtn.textContent = "Edit";
-                editValueBtn.onclick = () => {
-                    const newValue = prompt("New value:", JSON.stringify(item));
 
-                    if (newValue === null) return;
-
-                    try {
-                        current[index] = JSON.parse(newValue);
-                    } catch {
-                        current[index] = newValue;
-                    }
-
-                    renderCurrent();
-                };
-
-                li.appendChild(editValueBtn);
-
+                // select
                 if (item !== null && typeof item === "object") {
                     const selectBtn = document.createElement("button");
                     selectBtn.textContent = "Select";
@@ -134,7 +91,7 @@
             });
         }
 
-
+        // 🔵 OBJECT MODE
         else {
             for (let key in current) {
                 const li = document.createElement("li");
@@ -165,37 +122,6 @@
 
                     li.appendChild(selectBtn);
                 }
-                const editValueBtn = document.createElement("button");
-                editValueBtn.textContent = "Edit Value";
-                editValueBtn.onclick = () => {
-                    const newValue = prompt("New value:", JSON.stringify(current[key]));
-
-                    if (newValue === null) return;
-
-                    try {
-                        current[key] = JSON.parse(newValue);
-                    } catch {
-                        current[key] = newValue;
-                    }
-
-                    renderCurrent();
-                };
-                li.appendChild(editValueBtn);
-
-   
-                const editKeyBtn = document.createElement("button");
-                editKeyBtn.textContent = "Edit Key";
-                editKeyBtn.onclick = () => {
-                    const newKey = prompt("New key:", key);
-                    if (!newKey || newKey === key) return;
-
-                    current[newKey] = current[key];
-                    delete current[key];
-
-                    renderCurrent();
-                };
-                li.appendChild(editKeyBtn);
-
 
                 list.appendChild(li);
             }
@@ -206,7 +132,7 @@
         let value = document.getElementById("value").value;
         const type = document.getElementById("type").value;
 
-
+        // 🧠 If current is ARRAY → ignore key
         if (Array.isArray(current)) {
 
             if (type === "auto") {
@@ -222,10 +148,10 @@
             else if (type === "array") value = [];
             else if (type === "object") value = {};
 
-            current.push(value);
+            current.push(value); // 🔥 THIS LINE FIXES EVERYTHING
         }
 
-
+        // 🧠 If current is OBJECT → use key
         else {
             if (!key) return;
 
