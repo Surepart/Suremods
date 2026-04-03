@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steam ID Converter</title>
+</head>
+<body>
+    <h1>Steam ID Converter</h1>
+    <input id="input" placeholder="Enter Steam ID...">
+
+    <br><br>
+    <select id="from">
+        <option value="steam2">Steam2</option>
+        <option value="steam3">Steam3</option>
+        <option value="steam64">Steam64</option>
+    </select>
+    <p>To</p>
+    <select id="to">
+        <option value="steam2">Steam2</option>
+        <option value="steam3">Steam3</option>
+        <option value="steam64" selected>Steam64</option>
+    </select>
+    <br><br>
+
+    <button onclick="convert()">Convert</button>
+
+    <br><br>
+
+    <pre id="output"></pre>
+
+</body>
+<script>
+    function convert() {
+        const input = document.getElementById("input").value.trim();
+        const from = document.getElementById("from").value;
+        const to = document.getElementById("to").value;
+
+        try {
+            let steam64;
+
+
+            if (from === "steam2") {
+                const parts = input.split(":");
+                const Y = BigInt(parts[1]);
+                const Z = BigInt(parts[2]);
+
+                steam64 = Z * 2n + 76561197960265728n + Y;
+            }
+
+            else if (from === "steam64") {
+                steam64 = BigInt(input);
+            }
+
+            else if (from === "steam3") {
+                const Z = BigInt(input.replace(/[^\d]/g, ""));
+                steam64 = Z + 76561197960265728n;
+            }
+
+            else {
+                throw "Invalid input format";
+            }
+
+
+            let result;
+
+            if (to === "steam64") {
+                result = steam64.toString();
+            }
+
+            else if (to === "steam2") {
+                const base = 76561197960265728n;
+                const id = steam64 - base;
+
+                const Y = id % 2n;
+                const Z = id / 2n;
+
+                result = `STEAM_0:${Y}:${Z}`;
+            }
+
+            else if (to === "steam3") {
+                const base = 76561197960265728n;
+                const Z = steam64 - base;
+
+                result = `[U:1:${Z}]`;
+            }
+
+            else {
+                throw "Invalid output format";
+            }
+
+            document.getElementById("output").textContent = result;
+
+        } catch (err) {
+            alert("uh. oh. failed to convert")
+        }
+    }
+</script>
+</html>

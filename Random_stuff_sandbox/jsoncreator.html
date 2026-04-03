@@ -11,88 +11,189 @@
     <input id="key" placeholder="Key">
     <input id="value" placeholder="Value">
     <button onclick="addPair()">Add</button>
+    <select id="type">
+        <option value="auto">Auto</option>
+        <option value="string">String</option>
+        <option value="number">Number</option>
+        <option value="boolean">Boolean</option>
+        <option value="array">Array</option>
+        <option value="object">Object</option>
+    </select>
+    
 
     <br><br>
 
     <button onclick="generateJSON()">Generate JSON</button>
     <br>
     <h4>Current Data</h4>
-    <ul id="history"></ul>
+    <button onclick="goBack()">Back</button>
+    <ul id="currentList"></ul>
     <br>
     <h4>Generated Json:</h1>
     <pre id="output"></pre>
-
 
     <input id="filename" placeholder="File name (default: data)">
     <br><br>
     <button onclick="downloadJSON()">Download JSON</button>
 </body>
 <script>
-    let obj = {};
+    let root = {};
+    let current = root;
+    let stack = [];
 
-    function renderHistory() {
-    const list = document.getElementById("history");
-    list.innerHTML = "";
+    
+    function renderCurrent() {
+        const list = document.getElementById("currentList");
+        list.innerHTML = "";
 
-    for (let key in obj) {
-        const li = document.createElement("li");
+        // 🟢 ARRAY MODE
+        if (Array.isArray(current)) {
+            current.forEach((item, index) => {
+                const li = document.createElement("li");
 
-        li.textContent = `${key}: ${JSON.stringify(obj[key])}`;
+                li.textContent = JSON.stringify(item);
 
+                const arrayRef = current;
 
-        const btn = document.createElement("button");
-        btn.textContent = "Remove";
-        btn.onclick = () => {
-            delete obj[key];
-            renderHistory();
-        };
+                // remove
+                const removeBtn = document.createElement("button");
+                removeBtn.textContent = "Remove";
+                removeBtn.onclick = () => {
+                    arrayRef.splice(index, 1);
+                    renderCurrent();
+                };
 
-        li.appendChild(btn);
-        list.appendChild(li);
-    }
+                li.appendChild(removeBtn);
+
+                // select
+                if (item !== null && typeof item === "object") {
+                    const selectBtn = document.createElement("button");
+                    selectBtn.textContent = "Select";
+                    selectBtn.onclick = () => {
+                        stack.push({
+                            parent: current,
+                            key: index
+                        });
+
+                        current = item;
+                        renderCurrent();
+                    };
+
+                    li.appendChild(selectBtn);
+                }
+
+                list.appendChild(li);
+            });
+        }
+
+        // 🔵 OBJECT MODE
+        else {
+            for (let key in current) {
+                const li = document.createElement("li");
+
+                li.textContent = `${key}: ${JSON.stringify(current[key])}`;
+
+                const removeBtn = document.createElement("button");
+                removeBtn.textContent = "Remove";
+                removeBtn.onclick = () => {
+                    delete current[key];
+                    renderCurrent();
+                };
+
+                li.appendChild(removeBtn);
+
+                if (current[key] !== null && typeof current[key] === "object") {
+                    const selectBtn = document.createElement("button");
+                    selectBtn.textContent = "Select";
+                    selectBtn.onclick = () => {
+                        stack.push({
+                            parent: current,
+                            key: key
+                        });
+
+                        current = current[key];
+                        renderCurrent();
+                    };
+
+                    li.appendChild(selectBtn);
+                }
+
+                list.appendChild(li);
+            }
+        }
     }
     function addPair() {
-    const key = document.getElementById("key").value;
-    let value = document.getElementById("value").value;
+        let key = document.getElementById("key").value;
+        let value = document.getElementById("value").value;
+        const type = document.getElementById("type").value;
 
-    if (!key) return;
+        // 🧠 If current is ARRAY → ignore key
+        if (Array.isArray(current)) {
 
+            if (type === "auto") {
+                if (value.includes(",")) {
+                    value = value.split(",").map(v => v.trim());
+                }
+                else if (!isNaN(value) && value !== "") value = Number(value);
+                else if (value === "true") value = true;
+                else if (value === "false") value = false;
+            }
+            else if (type === "number") value = Number(value);
+            else if (type === "boolean") value = value === "true";
+            else if (type === "array") value = [];
+            else if (type === "object") value = {};
 
-    if (value.includes(",")) {
-        value = value.split(",").map(v => {
-            v = v.trim();
+            current.push(value); // 🔥 THIS LINE FIXES EVERYTHING
+        }
 
+        // 🧠 If current is OBJECT → use key
+        else {
+            if (!key) return;
 
-            if (!isNaN(v) && v !== "") return Number(v);
+            if (type === "auto") {
+                if (value.includes(",")) {
+                    value = value.split(",").map(v => v.trim());
+                }
+                else if (!isNaN(value) && value !== "") value = Number(value);
+                else if (value === "true") value = true;
+                else if (value === "false") value = false;
+            }
+            else if (type === "number") value = Number(value);
+            else if (type === "boolean") value = value === "true";
+            else if (type === "array") value = [];
+            else if (type === "object") value = {};
 
+            current[key] = value;
+        }
 
-            if (v === "true") return true;
-            if (v === "false") return false;
+        renderCurrent();
 
-            return v;
-        });
-    } else {
-
-        if (!isNaN(value) && value !== "") value = Number(value);
-        else if (value === "true") value = true;
-        else if (value === "false") value = false;
+        document.getElementById("key").value = "";
+        document.getElementById("value").value = "";
     }
+    function goBack() {
+        if (stack.length === 0) return;
 
-    obj[key] = value;
+        const last = stack.pop();
+        current = last.parent;
 
-    document.getElementById("key").value = "";
-    document.getElementById("value").value = "";
-    renderHistory();
+        renderCurrent();
     }
+    function addObject() {
+        if (Object.keys(current).length === 0) return;
 
+        obj.push(current);
+        current = {};
+
+        renderHistory();
+    }
 
     function generateJSON() {
         document.getElementById("output").textContent =
-            JSON.stringify(obj, null, 2);
+            JSON.stringify(root, null, 2);
     }
-
     function downloadJSON() {
-    if (Object.keys(obj).length === 0) {
+    if (Object.keys(root).length === 0) {
         alert("Alright. what you gonna do with that empty file bruh?");
         return;
     }
@@ -104,7 +205,7 @@
         filename = "data";
     }
 
-    const data = JSON.stringify(obj, null, 2);
+    const data = JSON.stringify(root, null, 2);
 
     const blob = new Blob([data], { type: "application/json" });
     const url = URL.createObjectURL(blob);

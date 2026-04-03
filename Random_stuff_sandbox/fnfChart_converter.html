@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FNF - Chart Converter unperfect</title>
+</head>
+<body>
+
+    <h2>FNF Chart Converter</h2>
+    <select id="mode">
+        <option value="0">Psych to FNF</option>
+        <option value="1">FNF to Psych</option>
+    </select>
+
+    <br><br>
+
+    <input type="file" id="files" multiple>
+
+    <br><br>
+
+    <input type="text" id="artist" placeholder="Artist (for Psych to FNF)">
+    <input type="text" id="songName" placeholder="Song Name">
+
+    <br><br>
+
+    <button onclick="convert()">Convert</button>
+
+    <p>Originlly made by tposejank</p>
+
+</body>
+
+<script>
+    function download(filename, content) {
+    const blob = new Blob([JSON.stringify(content, null, 4)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+}
+
+function convert() {
+    const mode = document.getElementById("mode").value;
+    const files = document.getElementById("files").files;
+
+    if (files.length === 0) {
+        alert("uhh.. where's your json??");
+        return;
+    }
+
+    let readers = [];
+    let fileData = {};
+
+    for (let file of files) {
+        let reader = new FileReader();
+        reader.onload = function(e) {
+            fileData[file.name] = JSON.parse(e.target.result);
+
+            if (Object.keys(fileData).length === files.length) {
+                if (mode == 0) psychToFnf(fileData);
+                else fnfToPsych(fileData);
+            }
+        };
+        reader.readAsText(file);
+    }
+}
+
+
+function psychToFnf(fileData) {
+    let converted = {
+        version: "2.0.0",
+        scrollSpeed: { default: 1.0 },
+        events: [],
+        notes: {},
+        generatedBy: "JS porter"
+    };
+
+    let meta = {
+        timeFormat: "ms",
+        artist: document.getElementById("artist").value,
+        playData: {
+            album: "volume3",
+            previewStart: 0,
+            previewEnd: 15000,
+            stage: null,
+            characters: {
+                player: null,
+                girlfriend: null,
+                opponent: null
+            },
+            songVariations: [],
+            difficulties: [],
+            noteStyle: "funkin"
+        },
+        songName: document.getElementById("songName").value,
+        timeChanges: [{ d: 4, n: 4, t: -1, bt: [4,4,4,4], bpm: null }],
+        generatedBy: "JS porter",
+        looped: false,
+        version: "2.2.0"
+    };
+
+    for (let fileName in fileData) {
+        let chart = fileData[fileName];
+
+        if (fileName !== "events.json") {
+            let diff = fileName.includes("-") 
+                ? fileName.split("-").pop().replace(".json", "")
+                : "normal";
+
+            let noteArray = [];
+
+            chart.song.notes.forEach(section => {
+                section.sectionNotes.forEach(note => {
+                    let data = note[1];
+
+                    if (!section.mustHitSection) {
+                        data = data < 4 ? data + 4 : data - 4;
+                    }
+
+                    noteArray.push({
+                        t: note[0],
+                        d: data,
+                        l: note[2]
+                    });
+                });
+            });
+
+            converted.scrollSpeed[diff] = chart.song.speed + 1;
+            converted.notes[diff] = noteArray;
+
+            meta.playData.stage = chart.song.stage || "mainStage";
+            meta.playData.characters.player = chart.song.player1;
+            meta.playData.characters.girlfriend = chart.song.player3;
+            meta.playData.characters.opponent = chart.song.player2;
+            meta.timeChanges[0].bpm = chart.song.bpm;
+            meta.playData.difficulties.push(diff);
+
+        } else {
+            chart.events?.forEach(event => {
+                let time = event[0];
+                event[1].forEach(ev => {
+                    converted.events.push({
+                        t: time,
+                        e: ev[0],
+                        v: { value1: ev[1], value2: ev[2] }
+                    });
+                });
+            });
+        }
+    }
+
+    const name = document.getElementById("songName").value || "unknown";
+
+    download(`${name}-chart.json`, converted);
+    download(`${name}-metadata.json`, meta);
+}
+
+
+function fnfToPsych(fileData) {
+    let chart, meta;
+
+    for (let name in fileData) {
+        if (name.includes("chart")) chart = fileData[name];
+        if (name.includes("metadata")) meta = fileData[name];
+    }
+
+    if (!chart || !meta) {
+        alert("alright bruh. YOU NEED THE CHART AND METADATA!!");
+        return;
+    }
+
+    let difficulties = meta.playData.difficulties;
+
+    difficulties.forEach(diff => {
+        let result = {
+            song: {
+                song: meta.songName,
+                bpm: meta.timeChanges[0].bpm,
+                needsVoices: true,
+                player1: meta.playData.characters.player,
+                player2: meta.playData.characters.opponent,
+                player3: meta.playData.characters.girlfriend,
+                speed: chart.scrollSpeed[diff] || 1,
+                notes: [],
+                stage: meta.playData.stage
+            }
+        };
+
+        let bpm = meta.timeChanges[0].bpm;
+        let secLen = (60 / bpm) * 1000 * 4;
+
+        let curSec = 0;
+        let nextSec = secLen;
+
+        result.song.notes.push({
+            sectionNotes: [],
+            lengthInSteps: 16,
+            mustHitSection: true,
+            bpm: 0,
+            changeBPM: false
+        });
+
+        chart.notes[diff].forEach(note => {
+            result.song.notes[curSec].sectionNotes.push([
+                note.t, note.d, note.l
+            ]);
+
+            if (note.t >= nextSec) {
+                result.song.notes.push({
+                    sectionNotes: [],
+                    lengthInSteps: 16,
+                    mustHitSection: true,
+                    bpm: 0,
+                    changeBPM: false
+                });
+
+                curSec++;
+                nextSec += secLen;
+            }
+        });
+
+        const name = meta.songName || "unknown";
+
+        download(`${name}-${diff}.json`, result);
+    });
+}
+</script>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hasher</title>
+</head>
+<body>
+    <h1>HASHER</h1>
+    <textarea id="input" placeholder="Enter text..."></textarea>
+
+    <br><br>
+
+    <select id="hashType">
+        <option value="SHA-256" selected>SHA-256</option>
+        <option value="SHA-1">SHA-1</option>
+        <option value="SHA-384">SHA-384</option>
+        <option value="SHA-512">SHA-512</option>
+        <option value="MD5">MD5</option>
+    </select>
+    <button onclick="hash()">Hash!</button>
+    <br><br>
+    <h3>Result:</h3>
+    <pre id="output"></pre>
+    <style>
+        textarea {
+            width: 500px;
+            height: 200px;
+            font-size: 16px;
+            padding: 10px;
+        }
+    </style>
+    <script>
+        async function hash() {
+            const input = document.getElementById("input").value;
+            const type = document.getElementById("hashType").value;
+
+            if (!input) {
+                alert("Enter something twins🥀🥀")
+                return;
+            }
+
+            if (type === "MD5") {
+                document.getElementById("output").textContent =
+                    "MD5 is no longer supported in browser crypto API.. nice fact btw!";
+                return;
+            }
+
+            const encoder = new TextEncoder();
+            const data = encoder.encode(input);
+
+            const hashBuffer = await crypto.subtle.digest(type, data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+
+            const hashHex = hashArray
+                .map(b => b.toString(16).padStart(2, "0"))
+                .join("");
+
+            document.getElementById("output").textContent = hashHex;
+        }
+    </script>
+</body>
+</html>

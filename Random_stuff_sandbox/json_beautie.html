@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Json Formator</title>
+</head>
+<body>
+    <h1>JSON Formator</h1>
+    <input type="file" id="fileInput" accept=".json">
+    <br><br>
+
+    <button onclick="convertJSON()">Convert</button>
+    <button id="downloadBtn" onclick="downloadFile()" disabled>Download</button>
+    <br><br>
+    <h3>Preview:    </h3>
+    <pre id="output" style="background:#1e1e1e; color:#e6e6e6; padding:12px; border:1px solid #333; border-radius:8px; font-family:Consolas, 'Courier New', monospace; font-size:14px; line-height:1.5; white-space:pre; overflow-x:auto;"></pre>
+</body>
+
+<script>
+    let formattedData = "";
+    let fileName = "";
+    function convertJSON() {
+        const file = document.getElementById("fileInput").files[0];
+
+        if (!file) {
+            alert("Drop your file first twins.")
+            return;
+        }
+        fileName = file.name;
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            const text = e.target.result;
+
+            try {
+                const parsed = JSON.parse(text);
+                const formatted = JSON.stringify(parsed, null, 4);
+                document.getElementById("output").textContent = formatted;
+                formattedData = JSON.stringify(parsed, null, 4);
+
+                document.getElementById("downloadBtn").disabled = false;
+            } catch (err) {
+                alert("your json is invalid twins..\n" + err.message)
+            }
+        };
+
+        reader.readAsText(file);
+    }
+    function downloadFile() {
+        if (!formattedData) return;
+
+        const blob = new Blob([formattedData], { type: "application/json" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = fileName; 
+        a.click();
+    }
+</script>
+</html>
