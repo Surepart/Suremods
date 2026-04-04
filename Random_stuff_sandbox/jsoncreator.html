@@ -29,6 +29,9 @@
     <br><br>
 
     <button onclick="generateJSON()">Generate JSON</button>
+    <br><br>
+    <input id="filename" placeholder="File name (default: data)">
+    <button onclick="downloadJSON()">Download JSON</button>
     <br>
     <h4>Current Data</h4>
     <button onclick="goBack()">Back</button>
@@ -37,9 +40,7 @@
     <h4>Generated Json:</h1>
     <pre id="output"></pre>
 
-    <input id="filename" placeholder="File name (default: data)">
-    <br><br>
-    <button onclick="downloadJSON()">Download JSON</button>
+    
 </body>
 <script>
     let root = {};
